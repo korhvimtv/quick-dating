@@ -1,15 +1,13 @@
 from functools import lru_cache
 from typing import List
 
-from pydantic import AnyHttpUrl, Field
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Quick Datings"
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = Field(
-        default_factory=lambda: [AnyHttpUrl("http://localhost:5173", scheme="http", host="localhost", port="5173")]
-    )
+    BACKEND_CORS_ORIGINS: List[str] = Field(default_factory=lambda: ["*"])
 
     POSTGRES_SERVER: str = "db"
     POSTGRES_PORT: int = 5432
@@ -20,6 +18,9 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = "CHANGE_ME_SUPER_SECRET"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 
+
+    SESSION_ROUND_SECONDS: int = 60  # duration of one round in seconds
+    CHAT_LIFETIME_DAYS: int = 2      # how long matches can chat
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:

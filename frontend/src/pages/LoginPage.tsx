@@ -3,17 +3,20 @@ import { AuthLayout } from "../components/AuthLayout";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
-export const LoginPage: React.FC<{ onSwitchToSignup: () => void }> = ({ onSwitchToSignup }) => {
+type Props = {
+  onSwitchToSignup: () => void;
+  onLoggedIn: (token: string) => void;
+};
+
+export const LoginPage: React.FC<Props> = ({ onSwitchToSignup, onLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setToken(null);
     setLoading(true);
 
     try {
@@ -29,7 +32,7 @@ export const LoginPage: React.FC<{ onSwitchToSignup: () => void }> = ({ onSwitch
       }
 
       const data = await res.json();
-      setToken(data.access_token);
+      onLoggedIn(data.access_token);
     } catch (err: any) {
       setError(err.message ?? "Unexpected error.");
     } finally {
@@ -72,7 +75,6 @@ export const LoginPage: React.FC<{ onSwitchToSignup: () => void }> = ({ onSwitch
           />
         </label>
         {error && <p className="alert alert-error">{error}</p>}
-        {token && <p className="alert alert-success">Logged in! Token stored in memory.</p>}
         <button className="primary-button" type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Log in"}
         </button>

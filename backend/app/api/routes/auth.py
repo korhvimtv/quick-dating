@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from ...db.session import get_db, Base, engine
-from ...schemas.user import UserCreate, UserLogin, UserRead, Token
+from ...db.session import Base, engine, get_db
+from ...models import user as user_models  # noqa: F401
+from ...models import session as session_models  # noqa: F401
+from ...schemas.user import Token, UserCreate, UserLogin, UserRead
 from ...services.user_service import UserService
 
 Base.metadata.create_all(bind=engine)
